@@ -1,21 +1,20 @@
 pipeline {
     agent any 	// 사용 가능한 에이전트에서 이 파이프라인 또는 해당 단계를 실행
 
-    stages {
-        stage('Prepare') {
-            steps {
-                git branch: 'master',
-                    url: 'https://github.com/mooh2jj/docker-jenkins-pipeline-test2.git'
-            }
+     stage('Build') {
+          steps {
+            // gralew이 있어야됨. git clone해서 project를 가져옴.
+              sh 'chmod +x gradlew'
+              sh  './gradlew clean build'
+          }
+          post {
+              success {
+                  echo 'gradle build success'
+              }
 
-            post {
-                success {
-                    sh 'echo "Successfully Cloned Repository"'
-                }
-                failure {
-                    sh 'echo "Fail Cloned Repository"'
-                }
-            }
-        }
-    }
+              failure {
+                  echo 'gradle build failed'
+              }
+          }
+     }
 }
