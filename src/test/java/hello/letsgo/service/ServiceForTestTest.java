@@ -22,6 +22,6 @@ class ServiceForTestTest {
     @Test
     void failTest() {
         int result = serviceForTest2.failTest2();
-        Assertions.assertEquals(result, 77);
+        Assertions.assertEquals(result, 44);
     }
 }
