@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    triggers {
-        pollSCM('*/3 * * * *')
-    }
-
     environment {
         imagename = "hwangdy/new-test"
         registryCredential = '9aa42473-4719-43e4-bc11-6fe70f2e5470'
@@ -57,50 +53,63 @@ pipeline {
           }
         }
 
-        // docker build
-        stage('Bulid Docker') {
-          agent any
-          steps {
-            echo 'Bulid Docker'
-            dir ('../new-test') {
-              script {
-                bat 'cd ../new-test'
-                dockerImage = docker.build imagename
-              }
-            }
-          }
-          post {
-            failure {
-              error 'This pipeline stops here...'
-            }
-          }
-        }
-
-        // docker push
-        stage('Push Docker') {
-          agent any
-          steps {
-            echo 'Push Docker'
-            dir ('../new-test') {
-              script {
-                docker.withRegistry( '', registryCredential) {
-                  dockerImage.push("latest")
+        stages {
+            stage('Test') {
+                steps {
+                    bat 'gradlew check'
                 }
-              }
             }
-
-//             script {
-//                 bat 'cd ../new-test'
-//                 docker.withRegistry( '', registryCredential) {
-//                     dockerImage.push("1.0")  // ex) "1.0"
-//                 }
-//             }
-          }
-          post {
-            failure {
-              error 'This pipeline stops here...'
-            }
-          }
         }
+        post {
+            always {
+                junit 'build/reports/**/*.xml'
+            }
+        }
+
+//        // docker build
+//        stage('Bulid Docker') {
+//          agent any
+//          steps {
+//            echo 'Bulid Docker'
+//            dir ('../new-test') {
+//              script {
+//                bat 'cd ../new-test'
+//                dockerImage = docker.build imagename
+//              }
+//            }
+//          }
+//          post {
+//            failure {
+//              error 'This pipeline stops here...'
+//            }
+//          }
+//        }
+//
+//        // docker push
+//        stage('Push Docker') {
+//          agent any
+//          steps {
+//            echo 'Push Docker'
+//            dir ('../new-test') {
+//              script {
+//                docker.withRegistry( '', registryCredential) {
+//                  dockerImage.push("latest")
+//                }
+//              }
+//            }
+//
+////             script {
+////                 bat 'cd ../new-test'
+////                 docker.withRegistry( '', registryCredential) {
+////                     dockerImage.push("1.0")  // ex) "1.0"
+////                 }
+////             }
+//          }
+//          post {
+//            failure {
+//              error 'This pipeline stops here...'
+//            }
+//          }
+//        }
     }
 }
