@@ -48,6 +48,12 @@ pipeline {
           }
         }
 
+        stage('JUnit Test'){
+            steps{
+                junit '**/build/test-results/test/*.xml'
+            }
+        }
+
 //        stage('Test') {
 //            steps {
 //                echo 'Test Gradle'
@@ -58,9 +64,11 @@ pipeline {
 //        }
     }
 
-    post {
-        always {
-            junit 'build/reports/**/*.xml'
-        }
-    }
+//    post {
+//        always {
+//            dir ('../new-test') {
+//                junit  '**/reports/tests/test/*.xml'
+//            }
+//        }
+//    }
 }
