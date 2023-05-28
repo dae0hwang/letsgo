@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component;
 class ServiceForTestTest {
 
     @Autowired
-    ServiceForTest serviceForTest;
+    ServiceForTest2 serviceForTest2;
     @Test
     void successTest() {
-        int result = serviceForTest.successTest();
+        int result = serviceForTest2.successTest2();
         Assertions.assertEquals(result, 77);
     }
 
     @Test
     void failTest() {
-        int result = serviceForTest.failTest();
+        int result = serviceForTest2.failTest2();
         Assertions.assertEquals(result, 77);
     }
 }

@@ -9,6 +9,7 @@ pipeline {
 
     stages {
         // git에서 repository clone
+
         stage('Prepare') {
           steps {
             echo 'Clonning Repository'
@@ -34,13 +35,7 @@ pipeline {
             dir ('../new-test') {
               bat 'gradlew clean build'
             }
-//             dir ('.'){
-// //                 sh """
-// //                 ./gradlew clean build --exclude-task test
-// //                 """
-//               sh "./gradlew clean build"
-//
-//             }
+
           }
           post {
             success {
@@ -53,63 +48,19 @@ pipeline {
           }
         }
 
-        stages {
-            stage('Test') {
-                steps {
-                    bat 'gradlew check'
-                }
-            }
-        }
-        post {
-            always {
-                junit 'build/reports/**/*.xml'
-            }
-        }
-
-//        // docker build
-//        stage('Bulid Docker') {
-//          agent any
-//          steps {
-//            echo 'Bulid Docker'
-//            dir ('../new-test') {
-//              script {
-//                bat 'cd ../new-test'
-//                dockerImage = docker.build imagename
-//              }
-//            }
-//          }
-//          post {
-//            failure {
-//              error 'This pipeline stops here...'
-//            }
-//          }
-//        }
-//
-//        // docker push
-//        stage('Push Docker') {
-//          agent any
-//          steps {
-//            echo 'Push Docker'
-//            dir ('../new-test') {
-//              script {
-//                docker.withRegistry( '', registryCredential) {
-//                  dockerImage.push("latest")
+//        stage('Test') {
+//            steps {
+//                echo 'Test Gradle'
+//                dir ('../new-test') {
+//                    bat 'gradlew check'
 //                }
-//              }
 //            }
-//
-////             script {
-////                 bat 'cd ../new-test'
-////                 docker.withRegistry( '', registryCredential) {
-////                     dockerImage.push("1.0")  // ex) "1.0"
-////                 }
-////             }
-//          }
-//          post {
-//            failure {
-//              error 'This pipeline stops here...'
-//            }
-//          }
 //        }
+    }
+
+    post {
+        always {
+            junit 'build/reports/**/*.xml'
+        }
     }
 }
