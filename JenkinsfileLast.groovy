@@ -31,7 +31,7 @@ pipeline {
             agent any
             steps {
                 echo 'Bulid Gradle'
-                dir ('../new-test') {
+                dir ('../jenkins-test') {
                     bat 'gradlew clean build'
                 }
             }
@@ -59,7 +59,7 @@ pipeline {
             agent any
             steps {
                 echo 'Bulid Docker'
-                dir ('../new-test') {
+                dir ('../jenkins-test') {
                     script {
                         dockerImage = docker.build 'hwangdy/docker-test'
                     }
@@ -100,7 +100,7 @@ pipeline {
                     remote.password = 'j'
                     remote.allowAnyHosts = true
                     stage('Remote SSH') {
-                        sshCommand remote: remote, command: "jenkins a.sh"
+                        sshCommand remote: remote, command: "bash jenkins.sh"
                     }
                 }
             }
