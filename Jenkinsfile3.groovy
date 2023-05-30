@@ -1,11 +1,12 @@
-//enviroment에 우분투 ssh 아이디 비번 넣는 방법 ssh -step에 나와 있다. ㅇ
+//enviroment에 우분투 ssh 아이디 비번 넣는 방법 ssh -step에 나와 있다.
 //그냥 기존 script로 진행 ㅇ
 //git pull 적용되는 지 확인 ㅇ
+//script빼는 거 시도
+
 pipeline {
     agent any
     environment {
-        ubuntuId = credentials('ubuntu_id')
-        ubuntuPass = credentials('ubuntu_pass')
+        UBUNTUCRED = 'ubuntu-id-password'
         registryCredential = 'DockerHub_IdPwd'
         dockerImage = ''
     }
@@ -62,9 +63,7 @@ pipeline {
             steps {
                 echo 'Bulid Docker'
                 dir ('../jenkins-test') {
-                    script {
-                        dockerImage = docker.build 'hwangdy/docker-test'
-                    }
+                    dockerImage = docker.build 'hwangdy/docker-test'
                 }
             }
             post {
@@ -78,10 +77,8 @@ pipeline {
         stage('Push Docker') {
             steps {
                 echo 'Push Docker'
-                script {
-                    docker.withRegistry('', registryCredential) {
-                        dockerImage.push()
-                    }
+                docker.withRegistry('', $registryCredential) {
+                    dockerImage.push()
                 }
             }
             post {
@@ -98,8 +95,8 @@ pipeline {
                     def remote = [:]
                     remote.name = 'test'
                     remote.host = '127.0.0.5'
-                    remote.user = ubuntuId
-                    remote.password = ubuntuPass
+                    remote.user = j
+                    remote.password = j
                     remote.allowAnyHosts = true
                     stage('Remote SSH') {
                         sshCommand remote: remote, command: "bash jenkins.sh"
