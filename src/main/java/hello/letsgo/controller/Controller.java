@@ -8,6 +8,6 @@ public class Controller {
 
     @GetMapping("/api")
     public String api() {
-        return "first77";
+        return "test77";
     }
 }
